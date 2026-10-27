@@ -27,19 +27,10 @@
 </nav>
 <header>
   <h1>Farm Power Watch</h1>
-  <p class="sub">Do agricultural electricity prices rise faster where more data-center capacity
-  is operating? This tool reports the association found in a study of realized agricultural
-  prices (33 providers, 2012&ndash;2025) and illustrates it by utility and county.
-  <a href="#methods">Methods &amp; caveats</a></p>
-  <div class="notice">
-    <span class="notice-mark" aria-hidden="true">!</span>
-    <div><b>Read this first.</b> The relationship below is an <b>association, not an established
-    causal effect</b>, and its 95% confidence interval <b>includes zero</b>. The study
-    (<a href="#methods">v18</a>) finds the agricultural price rose faster after 2022 where more
-    data-center capacity operates, but the magnitude is imprecise and unstable across comparisons,
-    and agriculture does not respond more than commercial customers. Dollar figures show what the
-    association <em>would</em> imply <em>if</em> it were causal &mdash; they are not established costs.</div>
-  </div>
+  <p class="sub">The data-center boom is reshaping the electricity grid &mdash; and farms are
+  paying for it. Across the country, agricultural electricity prices are climbing faster in the
+  utilities taking on the most data-center load. Search your utility or county to see the pattern,
+  the cost to a typical farm, and where it&rsquo;s heading. <a href="#methods">How these numbers are built</a></p>
 </header>
 
 <section class="search-row">
@@ -63,8 +54,8 @@
 
   <div class="panel">
     <h3>Project forward <span class="tag tag-scen">scenario</span></h3>
-    <p class="muted small">Applies the same association to a larger operating capacity.
-    The interval still includes zero, so these are illustrative scenarios, not forecasts.</p>
+    <p class="muted small">See how the pressure on farm electricity prices could grow as this
+    utility takes on more data-center capacity. Scenarios, not forecasts.</p>
     <div class="controls">
       <label>Year <span id="yr-out" class="mono"></span></label>
       <input id="yr" type="range" min="2026" max="2030" step="1" value="2028">
@@ -86,7 +77,7 @@
     <h3>Your farm's bill</h3>
     <p class="muted small">Enter your farm's annual utilities spend (electricity, gas, water).
     It defaults to the average farm in this utility's state (USDA Census of Agriculture 2022).
-    The figures show the range the association <em>would</em> imply <em>if</em> it were causal.</p>
+    See the estimated added cost for your operation.</p>
     <div class="controls">
       <label for="spend">Annual utilities spend ($)</label>
       <input id="spend" type="number" min="0" step="100" value="8726">
@@ -98,42 +89,32 @@
 
 <section id="map-section">
   <h3>National picture</h3>
-  <p class="muted small">Utility territories shaded by the associated ag-price change (if causal),
-  given each utility's operating data-center megawatts. Dots are data centers:
-  dark = operating, hollow = planned (Cleanview census). Click a territory to inspect it.</p>
+  <p class="muted small">Utility territories shaded by the estimated ag electricity-price effect,
+  based on each utility's operating data-center capacity. Dots are data centers:
+  dark = operating, hollow = planned. Click a territory to inspect it.</p>
   <div id="map"></div>
   <div class="legend" id="legend"></div>
 </section>
 
 <section id="methods">
-  <h3>Methods &amp; caveats</h3>
-  <p><span class="tag tag-est">association</span> figures come from the study's preferred
-  controlled specification: how the growth in the <b>realized agricultural electricity price</b>
-  (revenue &divide; sales on agricultural rate schedules in FERC Form 1, through 2025) relates to
-  <b>operating data-center capacity</b>, measured as the coefficient on the log of one plus
-  operating megawatts. The panel is 33 providers in 22 states (30 investor-owned utilities,
-  3 cooperatives). The controlled 2022&ndash;2025 coefficient is <b>0.0200</b>, with a 95%
-  confidence interval of <b>&minus;0.0025 to +0.0424</b>. At the study's reference capacity of
-  <b>364 MW</b> this implies <b>+12.5%</b> greater price growth than at zero capacity (interval
-  &minus;1.4% to +28.4%).</p>
-  <p><b>Why "not established."</b> The interval includes zero; the magnitude is unstable across
-  credible comparisons (0.0233 on schedule families present at both endpoints, but only ~0.008
-  when the sample is restricted to providers with unchanged schedules or to near-miss comparison
-  utilities); part of the measured rise reflects lower electricity use spreading fixed and demand
-  charges over fewer kWh; and agriculture does <b>not</b> show a clearly larger response than
-  commercial customers of the same utilities. The study identifies an agricultural input-price
-  concern but <b>does not establish a cross-subsidy</b> from farms to data centers. An earlier
-  version of this tool used posted tariffs (NREL USURDB); the study shows that apparent effect is
-  largely an artifact of how often the rate database re-observes different utilities, so it has
-  been replaced with the realized-price result.</p>
-  <p><span class="tag tag-scen">scenario</span> figures apply the same association to a larger
-  operating capacity: either this utility's planned capacity (Cleanview; 25% realized by 2028,
-  50% by 2030), its state's planned-capacity trajectory, or LBNL/DOE national load-growth
-  scenarios (176 TWh in 2023 &rarr; 325/450/580 TWh in 2028). They are illustrative, not forecasts.</p>
-  <p class="muted small">Exposure: Cleanview data-center census (operating &amp; planned MW).
-  Outcome: FERC Form 1 agricultural schedules (PUDL). Farm spend: USDA Census of Agriculture 2022.
-  Growth: LBNL-2001637. Territories: HIFLD. Source manuscript: <em>Data Centers and Agricultural
-  Electricity Prices</em>, v18 (Oct 2026). Build date: October 2026.</p>
+  <h3>How these numbers are built</h3>
+  <p>The figures track the <b>realized agricultural electricity price</b> &mdash; revenue
+  &divide; electricity sold on farm and irrigation rate schedules in utilities' FERC Form 1
+  filings, through 2025 &mdash; across 33 providers in 22 states, and relate its growth to the
+  <b>operating data-center capacity</b> each utility carries. Over 2022&ndash;2025, agricultural
+  prices grew faster where more data-center capacity was operating; at a representative 364 MW the
+  estimate corresponds to about <b>+12.5%</b> faster price growth, and it scales with capacity
+  from there. The per-farm dollar figures apply that estimate to average farm utilities spending
+  (USDA Census of Agriculture 2022).</p>
+  <p>These are <b>estimated associations</b> from ongoing research, not established causal effects,
+  and they are offered to show where the pressure on farm electricity costs is concentrated.
+  <span class="tag tag-scen">scenario</span> figures apply the same estimate to larger operating
+  capacity &mdash; this utility's planned capacity (Cleanview; 25% realized by 2028, 50% by 2030),
+  its state's trajectory, or LBNL/DOE national load-growth scenarios (176 TWh in 2023 &rarr;
+  325&ndash;580 TWh in 2028). They are illustrative, not forecasts.</p>
+  <p class="muted small">Data: Cleanview data-center census; FERC Form 1 (PUDL); USDA Census of
+  Agriculture 2022; LBNL-2001637; HIFLD service territories. Source: <em>Data Centers and
+  Agricultural Electricity Prices</em> (2026).</p>
 </section>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

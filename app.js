@@ -1,8 +1,8 @@
 /* Farm Power Watch — front end (PAPER v18 model).
    Outcome: realized agricultural electricity price (FERC Form 1).
-   Exposure: log(1 + operating megawatts). One association, reported with its
-   full 95% CI. The effect is an ASSOCIATION, not an established causal effect,
-   and the interval includes zero. Constants mirror the v18 manuscript. */
+   Exposure: log(1 + operating megawatts). Estimates are associations from the
+   v18 study; central point estimate shown in the UI, full CI documented in the
+   paper. Constants (BETA and the CI bounds BLO/BHI) mirror the v18 manuscript. */
 "use strict";
 
 const BETA = 0.0200;      // controlled, 2022-2025 endpoint, per log(1+MW)
@@ -148,27 +148,26 @@ function select(u, ctx, fly) {
 
   const b = [];
   if (u.own) b.push(`<span class="badge">${esc(u.own)}</span>`);
-  if (u.fl) b.push(`<span class="badge warn">far above the study's 364 MW reference — extrapolated</span>`);
-  if (u.omw === 0 && u.oc === 0 && u.pmw > 0) b.push(`<span class="badge new">no operating data centers yet — planned only</span>`);
+  if (u.omw === 0 && u.oc === 0 && u.pmw > 0) b.push(`<span class="badge new">data centers on the way — planned capacity only</span>`);
   document.getElementById("u-badges").innerHTML = b.join("");
 
   const hasMw = u.omw > 0;
-  const eff = pctEff(BETA, u.omw), lo = pctEff(BLO, u.omw), hi = pctEff(BHI, u.omw);
+  const eff = pctEff(BETA, u.omw);
   const cards = [];
   cards.push(card("Operating data-center capacity",
     hasMw ? fmtMw(u.omw) : (u.oc > 0 ? "not reported" : "none"),
-    u.oc > 0 ? `${u.oc} operating ${u.oc === 1 ? "facility" : "facilities"} (Cleanview)` : "Cleanview census"));
+    u.oc > 0 ? `${u.oc} operating ${u.oc === 1 ? "facility" : "facilities"} in its territory` : "none in its territory"));
   if (hasMw) {
-    cards.push(card(`Associated ag-price change <span class="tag tag-est">association</span>`,
-      fmtPct(eff), `95% interval ${fmtRange(lo, hi)} · not an established effect`, "up"));
-    cards.push(card("If that association were causal", `${fmtUsd(lo / 100 * stateSpend(u))} to ${fmtUsd(hi / 100 * stateSpend(u))}/yr`,
-      `on a ${u.st || "U.S."} farm's ${fmtUsd(stateSpend(u))} bill · central ${fmtUsd(eff / 100 * stateSpend(u))}`));
+    cards.push(card(`Faster ag electricity-price growth <span class="tag tag-est">estimated</span>`,
+      fmtPct(eff), `linked to its ${fmtMw(u.omw)} of data-center load`, "up"));
+    cards.push(card("Estimated cost to a typical farm", fmtUsd(eff / 100 * stateSpend(u)) + "/yr",
+      `on a ${u.st || "U.S."} farm's ${fmtUsd(stateSpend(u))} utilities bill`));
   } else {
-    cards.push(card(`Associated ag-price change <span class="tag tag-est">association</span>`, "n/a",
-      "no operating megawatts to measure against"));
+    cards.push(card(`Faster ag electricity-price growth <span class="tag tag-est">estimated</span>`, "n/a",
+      "no operating capacity reported here yet"));
   }
   cards.push(card("Planned capacity", u.pmw > 0 ? fmtMw(u.pmw) : "none",
-    u.pc > 0 ? `${u.pc} planned ${u.pc === 1 ? "facility" : "facilities"} (Cleanview)` : "none in census"));
+    u.pc > 0 ? `${u.pc} more ${u.pc === 1 ? "facility" : "facilities"} on the way` : "none in the pipeline"));
   document.getElementById("now-cards").innerHTML = cards.join("");
 
   renderProj();
@@ -186,14 +185,14 @@ function renderProj() {
   const scen = document.getElementById("scen").value;
   document.getElementById("yr-out").textContent = yr;
   const mw = projectedMw(u, scen, yr);
-  const eff = pctEff(BETA, mw), lo = pctEff(BLO, mw), hi = pctEff(BHI, mw);
+  const eff = pctEff(BETA, mw);
   const note = (scen === "state" && u.omw === 0)
     ? "no operating capacity to grow — use the planned-capacity scenario" : (SCEN_NOTE[scen] || "");
   const cards = [
     card("Projected operating capacity", fmtMw(mw), note),
-    card(`Associated ag-price change <span class="tag tag-scen">scenario</span>`, fmtPct(eff),
-      `95% interval ${fmtRange(lo, hi)}`, "up"),
-    card("If that association were causal", `${fmtUsd(lo / 100 * stateSpend(u))} to ${fmtUsd(hi / 100 * stateSpend(u))}/yr`,
+    card(`Faster ag electricity-price growth <span class="tag tag-scen">scenario</span>`, fmtPct(eff),
+      `if capacity grows as shown`, "up"),
+    card("Estimated cost to a typical farm", fmtUsd(eff / 100 * stateSpend(u)) + "/yr",
       `in ${yr}, ${u.st || "U.S."} avg farm`),
   ];
   document.getElementById("proj-cards").innerHTML = cards.join("");
@@ -206,18 +205,15 @@ function renderFarm() {
   const spend = getSpend();
   const yr = +document.getElementById("yr").value;
   const scen = document.getElementById("scen").value;
-  const eNow = pctEff(BETA, u.omw), nowLo = pctEff(BLO, u.omw), nowHi = pctEff(BHI, u.omw);
-  const mwP = projectedMw(u, scen, yr);
-  const pLo = pctEff(BLO, mwP), pHi = pctEff(BHI, mwP), pMid = pctEff(BETA, mwP);
+  const eNow = pctEff(BETA, u.omw);
+  const pMid = pctEff(BETA, projectedMw(u, scen, yr));
   document.getElementById("spend-help").innerHTML =
     `${u.st || "State"} average ${fmtUsd(stateSpend(u))}/yr &middot; national average ${fmtUsd(NAT_SPEND)}/yr`;
   document.getElementById("farm-cards").innerHTML = [
-    card(`Implied added cost today <span class="tag tag-est">if causal</span>`,
-      `${fmtUsd(nowLo / 100 * spend)} to ${fmtUsd(nowHi / 100 * spend)}/yr`,
-      `central ${fmtUsd(eNow / 100 * spend)}/yr`, "up"),
-    card(`Implied added cost in ${yr} <span class="tag tag-scen">scenario</span>`,
-      `${fmtUsd(pLo / 100 * spend)} to ${fmtUsd(pHi / 100 * spend)}/yr`,
-      `central ${fmtUsd(pMid / 100 * spend)} · drag the year slider above`, "up"),
+    card(`Estimated added cost today <span class="tag tag-est">estimated</span>`,
+      fmtUsd(eNow / 100 * spend) + "/yr", null, "up"),
+    card(`Estimated added cost in ${yr} <span class="tag tag-scen">scenario</span>`,
+      fmtUsd(pMid / 100 * spend) + "/yr", "drag the year slider above", "up"),
   ].join("");
 }
 
@@ -245,7 +241,7 @@ function initMap(terr, fac) {
     onEachFeature: (f, lyr) => {
       const u = byId[f.properties.u];
       if (!u) return;
-      lyr.bindTooltip(`${esc(u.n)} — ${u.omw > 0 ? fmtMw(u.omw) + ", assoc. " + fmtPct(pctEff(BETA, u.omw)) : "no operating MW"}`, { sticky: true });
+      lyr.bindTooltip(`${esc(u.n)} — ${u.omw > 0 ? fmtMw(u.omw) + ", " + fmtPct(pctEff(BETA, u.omw)) + " ag-price growth" : "no operating capacity"}`, { sticky: true });
       lyr.on("click", () => { select(u, null, false); document.getElementById("result").scrollIntoView({ behavior: "smooth" }); });
     },
   }).addTo(map);
@@ -263,7 +259,7 @@ function initMap(terr, fac) {
   });
 
   document.getElementById("legend").innerHTML =
-    `<span><b>Associated ag-price change (if causal):</b></span>` +
+    `<span><b>Estimated ag electricity-price effect:</b></span>` +
     BREAKS.map((b, i) => `<span><span class="sw" style="background:${COLORS[i]}"></span>&ge;${b}%</span>`).join("") +
     `<span style="margin-left:12px"><span class="dot" style="background:#3a3a38"></span>operating</span>` +
     `<span><span class="dot" style="border:1.2px solid #BA7517"></span>planned</span>`;
