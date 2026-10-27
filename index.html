@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>DC × Agriculture Observatory — Overview</title>
+<style>
+  :root{--amber:#d97706;--green:#16a34a;--blue:#0ea5e9;--ink:#1f2937;--muted:#6b7280;--line:#e5e7eb;--bg:#f8fafc}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55}
+  .obs-nav{display:flex;align-items:center;gap:4px;background:#0f172a;padding:0 18px;height:46px;position:sticky;top:0;z-index:9999}
+  .obs-nav .obs-brand{font-weight:700;font-size:13.5px;color:#fff;margin-right:16px}
+  .obs-nav a{color:#cbd5e1;text-decoration:none;padding:7px 13px;border-radius:8px;font-size:13px;font-weight:600}
+  .obs-nav a:hover{background:#1e293b;color:#fff}
+  .obs-nav a.active{background:#d97706;color:#fff}
+  .obs-nav .spacer{flex:1}.obs-nav .tag{font-size:11px;color:#94a3b8}
+  .hero{max-width:1100px;margin:0 auto;padding:34px 24px 6px}
+  .hero h1{font-size:30px;margin:0 0 6px}
+  .hero p{font-size:16px;color:#374151;max-width:760px;margin:0}
+  .hero .lead{font-weight:600;color:var(--ink)}
+  .grid{max-width:1100px;margin:18px auto;padding:0 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+  .card .accent{height:5px}
+  .card .body{padding:18px 20px 20px;display:flex;flex-direction:column;height:100%}
+  .card h2{font-size:19px;margin:0 0 2px;display:flex;align-items:center;gap:8px}
+  .card .what{color:#374151;font-size:14px;margin:6px 0 12px}
+  .card h3{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:12px 0 5px}
+  .card ol{margin:0;padding-left:18px;font-size:13.5px}
+  .card ol li{margin:3px 0}
+  .card .means{font-size:13px;color:#374151}
+  .card .means b{color:var(--ink)}
+  .card .open{margin-top:auto;display:inline-block;text-align:center;margin-top:16px;padding:10px;border-radius:10px;color:#fff;font-weight:700;text-decoration:none;font-size:14px}
+  .tips,.foot{max-width:1100px;margin:0 auto;padding:8px 24px}
+  .tips{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin:6px auto 18px;max-width:1052px}
+  .tips h3{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  .tips ul{margin:0;padding-left:18px;font-size:14px;color:#374151}
+  .tips li{margin:4px 0}
+  .foot{color:var(--muted);font-size:12.5px;padding-bottom:34px}
+  .dot{width:11px;height:11px;border-radius:50%;display:inline-block;vertical-align:middle}
+</style>
+</head>
+<body>
+<nav class="obs-nav">
+  <span class="obs-brand">DC × Agriculture Observatory</span>
+  <a href="index.html" class="active">Overview</a>
+  <a href="electricity.html">Electricity</a>
+  <a href="land_map.html">Land</a>
+  <a href="water_map.html">Water</a>
+  <span class="spacer"></span><span class="tag">preliminary research · 2026</span>
+</nav>
+
+<div class="hero">
+  <h1>Data Centers &amp; Agriculture Observatory</h1>
+  <p><span class="lead">Data centers compete with farms for three shared resources — electricity, land, and water.</span>
+  This site has one interactive tool for each. Use the menu above to open them; this page explains what each
+  shows, how to use it, and what the numbers mean.</p>
+</div>
+
+<div class="grid">
+
+  <!-- ELECTRICITY -->
+  <div class="card">
+    <div class="accent" style="background:var(--amber)"></div>
+    <div class="body">
+      <h2>⚡ Electricity</h2>
+      <div class="what"><b>Farm Power Watch.</b> Whether agricultural electricity prices rise faster where more
+        data-center capacity operates — the association found in a study of realized farm prices, by utility and county.</div>
+      <h3>How to use it</h3>
+      <ol>
+        <li>Search your <b>utility or county</b> in the search box.</li>
+        <li>Read the cards for the <b>estimated association</b> and its confidence interval.</li>
+        <li>Open <b>"Project forward"</b> — drag the year slider and pick a capacity-growth scenario.</li>
+        <li>Enter your farm's annual utilities spend in <b>"Your farm's bill"</b> for an illustrative dollar range.</li>
+        <li>Explore the national map: territories shaded by the association, dots are data centers.</li>
+      </ol>
+      <h3>What the numbers mean</h3>
+      <div class="means"><b>"Associated ag-price change"</b> — how much faster ag prices grew where more
+        capacity operates. It is an <b>association, not an established effect</b>, and its interval includes
+        zero. Dollar figures show what it <em>would</em> imply <em>if</em> causal, not established costs.</div>
+      <a class="open" style="background:var(--amber)" href="electricity.html">Open Electricity →</a>
+    </div>
+  </div>
+
+  <!-- LAND -->
+  <div class="card">
+    <div class="accent" style="background:var(--green)"></div>
+    <div class="body">
+      <h2>🌾 Land</h2>
+      <div class="what"><b>Data Centers &amp; Farmland.</b> What each data center was built on, how much farmland
+        they consume, and whether they favor cropland.</div>
+      <h3>How to use it</h3>
+      <ol>
+        <li>Each dot is a data center, colored by what was there before:
+          <span class="dot" style="background:var(--amber)"></span> former farmland,
+          <span class="dot" style="background:#6b7280"></span> already developed,
+          <span class="dot" style="background:var(--green)"></span> other.</li>
+        <li><b>Click a dot</b> for operator, size, and what it replaced.</li>
+        <li><b>Filter by state</b> with the dropdown.</li>
+        <li>Use the <b>layer control</b> (top-right): turn on <b>County cropland share</b> (green = where farmland is)
+          and <b>Building footprints</b> — switch the basemap to <b>Satellite</b> and zoom in to see real outlines.</li>
+      </ol>
+      <h3>What the numbers mean</h3>
+      <div class="means"><b>"26% on former farmland"</b> — share of data centers built on cropland or pasture.
+        <b>"1.4× cropland targeting"</b> — they sit on cropland about 1.4× more often than the surrounding area has,
+        i.e. they favor flat, well-drained farmland.</div>
+      <a class="open" style="background:var(--green)" href="land_map.html">Open Land →</a>
+    </div>
+  </div>
+
+  <!-- WATER -->
+  <div class="card">
+    <div class="accent" style="background:var(--blue)"></div>
+    <div class="body">
+      <h2>💧 Water</h2>
+      <div class="what"><b>Data Centers &amp; Water.</b> How data centers compete with farms for water — both their
+        cooling-water use and the higher pumping costs that rising electricity prices bring.</div>
+      <h3>How to use it</h3>
+      <ol>
+        <li><b>Click any county</b> on the map to load its water profile.</li>
+        <li>Use <b>"Add a data center here"</b> (set new capacity in MW and your acres) to compare a facility's
+          cooling-water demand to the county's farm groundwater use.</li>
+        <li>Use the <b>irrigation pumping-cost calculator</b> — enter your pumping depth, water applied, system,
+          and electricity rate — to see your pumping cost and how a price rise changes it.</li>
+      </ol>
+      <h3>What the numbers mean</h3>
+      <div class="means"><b>Pumping cost</b> — what it costs to lift irrigation water; deeper water means more
+        energy and higher cost, so electricity-price rises hit deep-well irrigators hardest. The
+        <b>cooling-water bar</b> compares a new data center's water use to local farm groundwater use.</div>
+      <a class="open" style="background:var(--blue)" href="water_map.html">Open Water →</a>
+    </div>
+  </div>
+</div>
+
+<div class="tips">
+  <h3>Reading the maps</h3>
+  <ul>
+    <li><b>Dots</b> are individual data centers; <b>shaded areas</b> are counties or utility territories.</li>
+    <li><b>Click anything</b> — a dot, a county, a territory — to see its details.</li>
+    <li>Toggle map layers with the <b>control in the map's corner</b>; switch basemaps the same way.</li>
+    <li>Numbers labeled <b>"scenario"</b> show a possible future, not a prediction.</li>
+  </ul>
+</div>
+
+<div class="foot">
+  Preliminary research, for discussion and outreach — not official figures. Built from public data
+  (USDA, EIA, USGS, NREL, NLCD/CDL, OpenStreetMap). One tool per resource; pick one above to begin.
+</div>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Data Centers & Farmland — Farm Power Watch</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+  :root{--amber:#d97706;--gray:#6b7280;--green:#16a34a;--ink:#1f2937;--muted:#6b7280;--line:#e5e7eb;--bg:#f8fafc}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+  header{padding:18px 22px 8px}
+  h1{margin:0;font-size:21px}
+  .sub{color:var(--muted);font-size:13.5px;margin-top:3px;max-width:760px}
+  .cards{display:flex;gap:12px;flex-wrap:wrap;padding:12px 22px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:130px}
+  .card .v{font-size:23px;font-weight:700}
+  .card .l{font-size:12px;color:var(--muted);margin-top:2px}
+  .card .v.amber{color:var(--amber)}
+  .wrap{display:flex;gap:14px;padding:6px 22px 20px;align-items:stretch;flex-wrap:wrap}
+  #map{flex:1 1 620px;height:560px;border-radius:14px;border:1px solid var(--line)}
+  .side{flex:0 0 280px;display:flex;flex-direction:column;gap:12px}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .panel h3{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  select{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+  .leg{display:flex;align-items:center;gap:8px;font-size:13px;margin:5px 0}
+  .dot{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .lb{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid #f1f5f9}
+  .lb b{font-variant-numeric:tabular-nums}
+  .note{font-size:11.5px;color:var(--muted);line-height:1.5}
+  .barwrap{height:10px;border-radius:6px;overflow:hidden;display:flex;margin:6px 0 2px}
+  .leaflet-popup-content{font-size:13px;margin:10px 12px}
+  .crop-legend{background:#fff;padding:8px 10px;border-radius:8px;font-size:11px;line-height:1.7;box-shadow:0 1px 5px rgba(0,0,0,.2)}
+  .crop-legend span{display:inline-block;width:12px;height:12px;margin-right:5px;border-radius:2px;vertical-align:middle;border:.5px solid #ccc}
+</style>
+</head>
+<body>
+<style>
+.obs-nav{display:flex;align-items:center;gap:4px;background:#0f172a;padding:0 18px;height:46px;font-family:system-ui,sans-serif;position:sticky;top:0;z-index:9999}
+.obs-nav .obs-brand{font-weight:700;font-size:13.5px;color:#fff;margin-right:16px}
+.obs-nav a{color:#cbd5e1;text-decoration:none;padding:7px 13px;border-radius:8px;font-size:13px;font-weight:600}
+.obs-nav a:hover{background:#1e293b;color:#fff}
+.obs-nav a.active{background:#d97706;color:#fff}
+.obs-nav .spacer{flex:1}.obs-nav .tag{font-size:11px;color:#94a3b8}
+</style>
+<nav class="obs-nav">
+  <span class="obs-brand">DC × Agriculture Observatory</span>
+  <a href="index.html">Overview</a>
+  <a href="electricity.html">Electricity</a>
+  <a href="land_map.html" class="active">Land</a>
+  <a href="water_map.html">Water</a>
+  <span class="spacer"></span><span class="tag">preliminary research · 2026</span>
+</nav>
+<header>
+  <h1>Data Centers &amp; Farmland</h1>
+  <div class="sub">What U.S. data centers were built on, and how much farmland they take. Each dot is a
+    facility, colored by its land cover before construction (NLCD 2008) over its actual building footprint.</div>
+</header>
+<div class="cards" id="cards"></div>
+<div class="wrap">
+  <div id="map"></div>
+  <div class="side">
+    <div class="panel">
+      <h3>Filter by state</h3>
+      <select id="stsel"><option value="">All states</option></select>
+      <div id="filtcount" class="note" style="margin-top:8px"></div>
+    </div>
+    <div class="panel">
+      <h3>Built on…</h3>
+      <div class="barwrap" id="bar"></div>
+      <div class="leg"><span class="dot" style="background:var(--amber)"></span> Former farmland (cropland/pasture)</div>
+      <div class="leg"><span class="dot" style="background:var(--gray)"></span> Already developed</div>
+      <div class="leg"><span class="dot" style="background:var(--green)"></span> Other (forest/grass)</div>
+    </div>
+    <div class="panel">
+      <h3>Top states — farmland taken</h3>
+      <div id="lb"></div>
+    </div>
+    <div class="panel">
+      <div class="note"><b>How to read this.</b> "Targeting 1.38×" = data centers sit on cropland 1.4× more
+      often than their counties' cropland share — they over-select flat, well-drained farmland. Acres are
+      building footprints (campus land is several× larger). Direct accounting, no causal model.</div>
+    </div>
+  </div>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const COLOR={farmland:'#d97706',developed:'#6b7280',other:'#16a34a'};
+const map=L.map('map',{scrollWheelZoom:true}).setView([39,-96],4);
+const baseLight=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+  {attribution:'© Esri',maxZoom:19,maxNativeZoom:16}).addTo(map);
+const baseSat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  {attribution:'© Esri World Imagery',maxZoom:19});
+let layer=L.layerGroup().addTo(map), DATA=null;
+// actual building-footprint polygons (loaded on demand; zoom in + switch to Satellite to see them on imagery)
+let fpLoaded=false;
+const fpLayer=L.geoJSON(null,{style:{color:'#b45309',weight:1,fillColor:'#f59e0b',fillOpacity:.55},
+  onEachFeature:(f,l)=>{const p=f.properties||{};l.bindPopup(`<b>${p.operator||'Unknown'}</b><br>${p.state||''}`+
+    (p.area_ac?` · ${(+p.area_ac).toFixed(1)} ac footprint`:''));}});
+function loadFp(){ if(fpLoaded)return; fpLoaded=true; fetch('data/dc_footprints.geojson').then(r=>r.json()).then(g=>fpLayer.addData(g)); }
+// county cropland-share choropleth (the farmland base DCs site into; loaded on demand)
+function cropColor(p){return p>50?'#005a32':p>30?'#238b45':p>15?'#41ab5d':p>5?'#74c476':p>1?'#c7e9c0':'#f7fcf5';}
+let cropLoaded=false;
+const cropLayer=L.geoJSON(null,{style:f=>({fillColor:cropColor(f.properties.crop_pct),fillOpacity:.6,color:'#fff',weight:.3}),
+  onEachFeature:(f,l)=>{const p=f.properties;l.bindPopup(`<b>${p.NAME} County</b><br>${p.crop_pct}% cropland`+
+    (p.dc_n>0?`<br>${p.dc_n} data center(s) · ${p.dc_farm_ac} ac on farmland`:''));}});
+function loadCrop(){ if(cropLoaded)return; cropLoaded=true;
+  fetch('data/counties_crop.geojson').then(r=>r.json()).then(g=>{cropLayer.addData(g);cropLayer.bringToBack();}); }
+const cropLegend=L.control({position:'bottomright'});
+cropLegend.onAdd=function(){const d=L.DomUtil.create('div','crop-legend');
+  d.innerHTML='<b>Cropland share</b><br>'+[['#005a32','&gt;50%'],['#238b45','30–50%'],['#41ab5d','15–30%'],['#74c476','5–15%'],['#c7e9c0','1–5%'],['#f7fcf5','&lt;1%']]
+    .map(x=>`<span style="background:${x[0]}"></span>${x[1]}`).join('<br>');return d;};
+map.on('overlayadd',e=>{ if(e.layer===fpLayer) loadFp(); if(e.layer===cropLayer){loadCrop();cropLegend.addTo(map);cropLayer.bringToBack();} });
+map.on('overlayremove',e=>{ if(e.layer===cropLayer) map.removeControl(cropLegend); });
+L.control.layers({'Map':baseLight,'Satellite':baseSat},
+  {'County cropland share':cropLayer,'Building footprints':fpLayer},{collapsed:false}).addTo(map);
+
+function cards(h){
+  const c=[['pct_farmland',h.pct_farmland+'%','of data centers built on former farmland','amber'],
+    ['targeting',h.targeting+'×','more likely to sit on cropland than county average','amber'],
+    ['farmland_ac',h.farmland_ac.toLocaleString()+' ac','farmland under DC buildings (≈'+h.campus_ac.toLocaleString()+' ac campus-scaled)',''],
+    ['lost','$'+h.lost_prod_m+'M/yr','lost farm production (campus-scaled)',''],
+    ['n',h.n.toLocaleString(),'data centers mapped','']];
+  document.getElementById('cards').innerHTML=c.map(x=>
+    `<div class="card"><div class="v ${x[3]}">${x[1]}</div><div class="l">${x[2]}</div></div>`).join('');
+}
+function bar(list){
+  const t={farmland:0,developed:0,other:0}; list.forEach(f=>t[f.cat]++);
+  const n=list.length||1;
+  document.getElementById('bar').innerHTML=['farmland','developed','other'].map(k=>
+    `<div style="width:${100*t[k]/n}%;background:${COLOR[k]}"></div>`).join('');
+}
+function draw(st){
+  layer.clearLayers();
+  const list=DATA.facilities.filter(f=>!st||f.st===st);
+  list.forEach(f=>{
+    L.circleMarker([f.lat,f.lon],{radius:f.cat==='farmland'?5:4,color:'#fff',weight:.6,
+      fillColor:COLOR[f.cat],fillOpacity:.85}).addTo(layer)
+     .bindPopup(`<b>${f.op}</b><br>${f.st} · ${f.ac?f.ac+' ac footprint':'—'}<br>`+
+       `Built on: <b style="color:${COLOR[f.cat]}">${f.cat==='farmland'?'former farmland':f.cat}</b>`+
+       (f.crop!=null?`<br>${f.crop}% of footprint was cropland`:''));
+  });
+  document.getElementById('filtcount').textContent=`${list.length.toLocaleString()} facilities shown`;
+  bar(list);
+}
+fetch('data/land.json').then(r=>r.json()).then(d=>{
+  DATA=d; cards(d.headline);
+  const sel=document.getElementById('stsel');
+  [...new Set(d.facilities.map(f=>f.st).filter(Boolean))].sort().forEach(s=>{
+    const o=document.createElement('option');o.value=o.textContent=s;sel.appendChild(o);});
+  sel.onchange=e=>draw(e.target.value);
+  document.getElementById('lb').innerHTML=d.by_state.map(s=>
+    `<div class="lb"><span>${s.st}</span><b>${s.farm_ac.toLocaleString()} ac · ${s.n}</b></div>`).join('');
+  draw('');
+});
+</script>
+</body>
+</html>
