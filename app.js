@@ -154,16 +154,16 @@ function select(u, ctx, fly) {
   const hasMw = u.omw > 0;
   const eff = pctEff(BETA, u.omw);
   const cards = [];
-  cards.push(card("Operating data-center capacity",
+  cards.push(card("Data-center load on this utility",
     hasMw ? fmtMw(u.omw) : (u.oc > 0 ? "not reported" : "none"),
-    u.oc > 0 ? `${u.oc} operating ${u.oc === 1 ? "facility" : "facilities"} in its territory` : "none in its territory"));
+    u.oc > 0 ? `${u.oc} data ${u.oc === 1 ? "center" : "centers"} drawing power here` : "none in its territory"));
   if (hasMw) {
-    cards.push(card(`Faster ag electricity-price growth <span class="tag tag-est">estimated</span>`,
-      fmtPct(eff), `linked to its ${fmtMw(u.omw)} of data-center load`, "up"));
-    cards.push(card("Estimated cost to a typical farm", fmtUsd(eff / 100 * stateSpend(u)) + "/yr",
-      `on a ${u.st || "U.S."} farm's ${fmtUsd(stateSpend(u))} utilities bill`));
+    cards.push(card(`How much faster farm power prices are climbing <span class="tag tag-est">estimated</span>`,
+      fmtPct(eff), `as this utility absorbs ${fmtMw(u.omw)} of data-center demand`, "up"));
+    cards.push(card("What it's costing a typical farm", fmtUsd(eff / 100 * stateSpend(u)) + "/yr",
+      `on a ${u.st || "U.S."} farm's ${fmtUsd(stateSpend(u))} power-and-utilities bill`));
   } else {
-    cards.push(card(`Faster ag electricity-price growth <span class="tag tag-est">estimated</span>`, "n/a",
+    cards.push(card(`How much faster farm power prices are climbing <span class="tag tag-est">estimated</span>`, "n/a",
       "no operating capacity reported here yet"));
   }
   cards.push(card("Planned capacity", u.pmw > 0 ? fmtMw(u.pmw) : "none",
@@ -189,10 +189,10 @@ function renderProj() {
   const note = (scen === "state" && u.omw === 0)
     ? "no operating capacity to grow — use the planned-capacity scenario" : (SCEN_NOTE[scen] || "");
   const cards = [
-    card("Projected operating capacity", fmtMw(mw), note),
-    card(`Faster ag electricity-price growth <span class="tag tag-scen">scenario</span>`, fmtPct(eff),
-      `if capacity grows as shown`, "up"),
-    card("Estimated cost to a typical farm", fmtUsd(eff / 100 * stateSpend(u)) + "/yr",
+    card("Projected data-center load", fmtMw(mw), note),
+    card(`How much faster farm power prices climb <span class="tag tag-scen">scenario</span>`, fmtPct(eff),
+      `if this capacity gets built`, "up"),
+    card("What it would cost a typical farm", fmtUsd(eff / 100 * stateSpend(u)) + "/yr",
       `in ${yr}, ${u.st || "U.S."} avg farm`),
   ];
   document.getElementById("proj-cards").innerHTML = cards.join("");
@@ -210,9 +210,9 @@ function renderFarm() {
   document.getElementById("spend-help").innerHTML =
     `${u.st || "State"} average ${fmtUsd(stateSpend(u))}/yr &middot; national average ${fmtUsd(NAT_SPEND)}/yr`;
   document.getElementById("farm-cards").innerHTML = [
-    card(`Estimated added cost today <span class="tag tag-est">estimated</span>`,
+    card(`Added to your power bill today <span class="tag tag-est">estimated</span>`,
       fmtUsd(eNow / 100 * spend) + "/yr", null, "up"),
-    card(`Estimated added cost in ${yr} <span class="tag tag-scen">scenario</span>`,
+    card(`Added to your bill by ${yr} <span class="tag tag-scen">scenario</span>`,
       fmtUsd(pMid / 100 * spend) + "/yr", "drag the year slider above", "up"),
   ].join("");
 }
@@ -259,7 +259,7 @@ function initMap(terr, fac) {
   });
 
   document.getElementById("legend").innerHTML =
-    `<span><b>Estimated ag electricity-price effect:</b></span>` +
+    `<span><b>How much faster farm power prices are climbing:</b></span>` +
     BREAKS.map((b, i) => `<span><span class="sw" style="background:${COLORS[i]}"></span>&ge;${b}%</span>`).join("") +
     `<span style="margin-left:12px"><span class="dot" style="background:#3a3a38"></span>operating</span>` +
     `<span><span class="dot" style="border:1.2px solid #BA7517"></span>planned</span>`;
