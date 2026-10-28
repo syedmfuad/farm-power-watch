@@ -67,7 +67,7 @@
  <div id=calcOut class=grid style="margin-bottom:12px"></div>
  <div id=calcSum style="font-size:14px;line-height:1.6"></div>
 </div>
-<div class=note>prototype - all 3,108 contiguous counties. blue = groundwater-irrigating (pumping cost shown); teal = surface-water irrigated (pumping N/A); gray = no irrigation. cost = USGS depth x USGS groundwater volume x county industrial electricity price (conservative basis); depth/price state-median-imputed where missing; irrigation-equivalent uses each county's USGS applied-water depth (ac-ft/acre). calculator: kWh/acre-ft = 1.024/efficiency x (lift + system operating-pressure head); baseline x the serving utility's data-center electricity-price effect (now &amp; 2030-central) from the companion price study.</div>
+<div class=note>prototype - all 3,108 contiguous counties. blue = groundwater-irrigating (pumping cost shown); teal = surface-water irrigated (pumping N/A); gray = no irrigation. cost = USGS depth x USGS groundwater volume x county industrial electricity price (conservative basis); depth/price state-median-imputed where missing; irrigation-equivalent uses each county's USGS applied-water depth (ac-ft/acre). calculator: kWh/acre-ft = 1.024/efficiency x (lift + system operating-pressure head); baseline x the serving utility's data center electricity-price effect (now &amp; 2030-central) from the companion price study.</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 <script>
@@ -88,7 +88,7 @@ function render(){var a=C[sel];if(!a)return;var d=a[0],p=a[1],g=a[2],afac=a[3]||
  var ac=Math.max(1,+document.getElementById('acres').value||1),mw=+document.getElementById('mw').value;document.getElementById('mwout').textContent=mw+' MW';
  var prem=(Math.exp(RHO*Math.log(1+dc))-1)*100;document.getElementById('ctitle').textContent=nm+(s?', '+s:'');
  var dl=dc>0?'served by <b>'+u+'</b> ('+fmt(dc)+' data centers on this grid)':'served by <b>'+u+'</b> (no major data centers yet)';
- if(t===0){document.getElementById('shared').innerHTML=(dc>0?'the same grid powering <b>'+fmt(dc)+'</b> data centers carries an estimated <b style=color:#185FA5>'+prem.toFixed(0)+'%</b> data-center-linked premium in this pumping cost. ':'')+dl+'.';
+ if(t===0){document.getElementById('shared').innerHTML=(dc>0?'the same grid powering <b>'+fmt(dc)+'</b> data centers carries an estimated <b style=color:#185FA5>'+prem.toFixed(0)+'%</b> data center-linked premium in this pumping cost. ':'')+dl+'.';
   document.getElementById('profile').innerHTML=mc('depth to water',d+' ft','the pumping lift')+mc('groundwater share',g+'%','of irrigation')+mc('pumping cost','$'+fmt(p)+'/ac','electric GW pumping')+mc('data centers on grid',fmt(dc),u.slice(0,18));}
  else if(t===1){document.getElementById('shared').innerHTML='this county irrigates from <b>surface water</b>, so there is no groundwater pumping cost - its water cost is a delivered-water price (not in this dataset). '+dl+'.';
   document.getElementById('profile').innerHTML=mc('water-table depth',d+' ft','local groundwater')+mc('irrigation source','surface','no groundwater pumped')+mc('pumping cost','N/A','surface-fed')+mc('data centers on grid',fmt(dc),u.slice(0,18));}
@@ -113,7 +113,7 @@ function calc(){var a=C[sel]||[0,0,0,2.5,0,0,0,0,11,0,0];var G=function(id){retu
  var psi={spr:25,mic:12,sur:3}[sys],tdh=lift+psi*2.31,kwhaf=1.024/eta*tdh,kwhac=kwhaf*af;
  var bAF=kwhaf*rate/100,bAc=kwhac*rate/100,bF=bAc*acres,eN=a[9]||0,e30=a[10]||0;
  var dAc=bAc*eN/100,dF=dAc*acres,d3Ac=bAc*e30/100,d3F=d3Ac*acres;
- document.getElementById('calcOut').innerHTML=mc('your pumping cost','$'+fmt(bAc)+'/ac','$'+fmt(bAF)+'/acre-ft &middot; $'+fmt(bF)+'/yr')+mc('data-center-linked now','+$'+dAc.toFixed(2)+'/ac','+$'+fmt(dF)+'/yr ('+eN.toFixed(0)+'%)')+mc('projected by 2030','+$'+d3Ac.toFixed(2)+'/ac','+$'+fmt(d3F)+'/yr ('+e30.toFixed(0)+'%)');
- document.getElementById('calcSum').innerHTML=(eN>0?'of your &asymp;<b>$'+fmt(bF)+'/yr</b> electric pumping bill, about <b style=color:#185FA5>$'+fmt(dF)+'</b> is data-center-linked today'+(e30>eN?', rising to &asymp;<b>$'+fmt(d3F)+'/yr</b> by 2030':'')+'.':'your &asymp;<b>$'+fmt(bF)+'/yr</b> electric pumping bill - no data centers on this grid yet, so no data-center premium today.');}
+ document.getElementById('calcOut').innerHTML=mc('your pumping cost','$'+fmt(bAc)+'/ac','$'+fmt(bAF)+'/acre-ft &middot; $'+fmt(bF)+'/yr')+mc('data center-linked now','+$'+dAc.toFixed(2)+'/ac','+$'+fmt(dF)+'/yr ('+eN.toFixed(0)+'%)')+mc('projected by 2030','+$'+d3Ac.toFixed(2)+'/ac','+$'+fmt(d3F)+'/yr ('+e30.toFixed(0)+'%)');
+ document.getElementById('calcSum').innerHTML=(eN>0?'of your &asymp;<b>$'+fmt(bF)+'/yr</b> electric pumping bill, about <b style=color:#185FA5>$'+fmt(dF)+'</b> is data center-linked today'+(e30>eN?', rising to &asymp;<b>$'+fmt(d3F)+'/yr</b> by 2030':'')+'.':'your &asymp;<b>$'+fmt(bF)+'/yr</b> electric pumping bill - no data centers on this grid yet, so no data center premium today.');}
 ['clift','caf','csys','crate','ceta','cacres'].forEach(function(id){document.getElementById(id).addEventListener('input',calc);});
 </script></body></html>

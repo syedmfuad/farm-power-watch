@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Farm Power Watch — data centers and farm electricity prices</title>
-<meta name="description" content="Look up your electric utility's data-center exposure, the estimated impact on farm electricity prices, and scenario projections to 2030.">
+<title>Farm Power Watch · data centers and farm electricity prices</title>
+<meta name="description" content="Look up your electric utility's data center exposure, the estimated impact on farm electricity prices, and scenario projections to 2030.">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -27,17 +27,17 @@
 </nav>
 <header>
   <h1>Farm Power Watch</h1>
-  <p class="sub">Data centers are rewiring America&rsquo;s power grid &mdash; and farmers are
-  picking up the tab. In the utilities absorbing the most data-center demand, the electricity
-  prices farms pay are climbing faster than anywhere else in the country. Find your utility or
-  county and see what it&rsquo;s costing &mdash; today, and as the buildout accelerates.
+  <p class="sub">Data centers are rewiring America&rsquo;s power grid. In the utilities
+  absorbing the most data center demand, the electricity prices farms pay are climbing
+  faster than anywhere else in the country. Find your utility or county and see what
+  it&rsquo;s costing today, and as the buildout accelerates.
   <a href="#methods">How these numbers are built</a></p>
 </header>
 
 <section class="search-row">
   <div class="search-wrap">
     <input id="search" type="text" autocomplete="off" spellcheck="false"
-           placeholder="Search your utility or county &mdash; e.g. &quot;Georgia Power&quot; or &quot;Lubbock County, TX&quot;">
+           placeholder="Search your utility or county, e.g. &quot;Georgia Power&quot; or &quot;Lubbock County, TX&quot;">
     <div id="suggest" class="suggest" hidden></div>
   </div>
 </section>
@@ -56,7 +56,7 @@
   <div class="panel">
     <h3>Project forward <span class="tag tag-scen">scenario</span></h3>
     <p class="muted small">See how the pressure on farm electricity prices could grow as this
-    utility takes on more data-center capacity. Scenarios, not forecasts.</p>
+    utility takes on more data center capacity. Scenarios, not forecasts.</p>
     <div class="controls">
       <label>Year <span id="yr-out" class="mono"></span></label>
       <input id="yr" type="range" min="2026" max="2030" step="1" value="2028">
@@ -64,9 +64,9 @@
       <select id="scen">
         <option value="pipeline">Planned capacity (this utility)</option>
         <option value="state">State trajectory (this utility's state planned capacity)</option>
-        <option value="low">Low &mdash; LBNL slow load growth (+13%/yr)</option>
-        <option value="central" selected>Central &mdash; LBNL midpoint (+21%/yr)</option>
-        <option value="high">High &mdash; LBNL high (+27%/yr)</option>
+        <option value="low">Low: LBNL slow load growth (+13%/yr)</option>
+        <option value="central" selected>Central: LBNL midpoint (+21%/yr)</option>
+        <option value="high">High: LBNL high (+27%/yr)</option>
       </select>
     </div>
     <div class="cards" id="proj-cards"></div>
@@ -91,7 +91,7 @@
 <section id="map-section">
   <h3>National picture</h3>
   <p class="muted small">Utility territories shaded by the estimated ag electricity-price effect,
-  based on each utility's operating data-center capacity. Dots are data centers:
+  based on each utility's operating data center capacity. Dots are data centers:
   dark = operating, hollow = planned. Click a territory to inspect it.</p>
   <div id="map"></div>
   <div class="legend" id="legend"></div>
@@ -99,21 +99,21 @@
 
 <section id="methods">
   <h3>How these numbers are built</h3>
-  <p>The figures track the <b>realized agricultural electricity price</b> &mdash; revenue
+  <p>The figures track the <b>realized agricultural electricity price</b> (revenue
   &divide; electricity sold on farm and irrigation rate schedules in utilities' FERC Form 1
-  filings, through 2025 &mdash; across 33 providers in 22 states, and relate its growth to the
-  <b>operating data-center capacity</b> each utility carries. Over 2022&ndash;2025, agricultural
-  prices grew faster where more data-center capacity was operating; at a representative 364 MW the
+  filings, through 2025) across 33 providers in 22 states, and relate its growth to the
+  <b>operating data center capacity</b> each utility carries. Over 2022&ndash;2025, agricultural
+  prices grew faster where more data center capacity was operating; at a representative 364 MW the
   estimate corresponds to about <b>+12.5%</b> faster price growth, and it scales with capacity
   from there. The per-farm dollar figures apply that estimate to average farm utilities spending
   (USDA Census of Agriculture 2022).</p>
-  <p>These estimates come from ongoing research linking data-center growth to the electricity
-  prices farms pay; the relationship is strongest where data-center capacity is largest.
+  <p>These estimates come from ongoing research linking data center growth to the electricity
+  prices farms pay; the relationship is strongest where data center capacity is largest.
   <span class="tag tag-scen">scenario</span> figures apply the same estimate to larger operating
-  capacity &mdash; this utility's planned capacity (Cleanview; 25% realized by 2028, 50% by 2030),
+  capacity: this utility's planned capacity (Cleanview; 25% realized by 2028, 50% by 2030),
   its state's trajectory, or LBNL/DOE national load-growth scenarios (176 TWh in 2023 &rarr;
   325&ndash;580 TWh in 2028). They are illustrative, not forecasts.</p>
-  <p class="muted small">Data: Cleanview data-center census; FERC Form 1 (PUDL); USDA Census of
+  <p class="muted small">Data: Cleanview data center census; FERC Form 1 (PUDL); USDA Census of
   Agriculture 2022; LBNL-2001637; HIFLD service territories. Source: <em>Data Centers and
   Agricultural Electricity Prices</em> (2026).</p>
 </section>

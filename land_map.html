@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Data Centers & Farmland — Farm Power Watch</title>
+<title>Data Centers & Farmland · Farm Power Watch</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
   :root{--amber:#d97706;--gray:#6b7280;--green:#16a34a;--ink:#1f2937;--muted:#6b7280;--line:#e5e7eb;--bg:#f8fafc}
@@ -73,12 +73,12 @@
       <div class="leg"><span class="dot" style="background:var(--green)"></span> Other (forest/grass)</div>
     </div>
     <div class="panel">
-      <h3>Top states — farmland taken</h3>
+      <h3>Top states: farmland taken</h3>
       <div id="lb"></div>
     </div>
     <div class="panel">
       <div class="note"><b>How to read this.</b> "Targeting 1.38×" = data centers sit on cropland 1.4× more
-      often than their counties' cropland share — they over-select flat, well-drained farmland. Acres are
+      often than their counties' cropland share; they over-select flat, well-drained farmland. Acres are
       building footprints (campus land is several× larger). Direct accounting, no causal model.</div>
     </div>
   </div>
@@ -136,7 +136,7 @@ function draw(st){
   list.forEach(f=>{
     L.circleMarker([f.lat,f.lon],{radius:f.cat==='farmland'?5:4,color:'#fff',weight:.6,
       fillColor:COLOR[f.cat],fillOpacity:.85}).addTo(layer)
-     .bindPopup(`<b>${f.op}</b><br>${f.st} · ${f.ac?f.ac+' ac footprint':'—'}<br>`+
+     .bindPopup(`<b>${f.op}</b><br>${f.st} · ${f.ac?f.ac+' ac footprint':'n/a'}<br>`+
        `Built on: <b style="color:${COLOR[f.cat]}">${f.cat==='farmland'?'former farmland':f.cat}</b>`+
        (f.crop!=null?`<br>${f.crop}% of footprint was cropland`:''));
   });

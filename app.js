@@ -1,4 +1,4 @@
-/* Farm Power Watch — front end (PAPER v18 model).
+/* Farm Power Watch - front end (PAPER v18 model).
    Outcome: realized agricultural electricity price (FERC Form 1).
    Exposure: log(1 + operating megawatts). Estimates are associations from the
    v18 study; central point estimate shown in the UI, full CI documented in the
@@ -148,18 +148,18 @@ function select(u, ctx, fly) {
 
   const b = [];
   if (u.own) b.push(`<span class="badge">${esc(u.own)}</span>`);
-  if (u.omw === 0 && u.oc === 0 && u.pmw > 0) b.push(`<span class="badge new">data centers on the way — planned capacity only</span>`);
+  if (u.omw === 0 && u.oc === 0 && u.pmw > 0) b.push(`<span class="badge new">data centers on the way (planned capacity only)</span>`);
   document.getElementById("u-badges").innerHTML = b.join("");
 
   const hasMw = u.omw > 0;
   const eff = pctEff(BETA, u.omw);
   const cards = [];
-  cards.push(card("Data-center load on this utility",
+  cards.push(card("Data center load on this utility",
     hasMw ? fmtMw(u.omw) : (u.oc > 0 ? "not reported" : "none"),
     u.oc > 0 ? `${u.oc} data ${u.oc === 1 ? "center" : "centers"} drawing power here` : "none in its territory"));
   if (hasMw) {
     cards.push(card(`How much faster farm power prices are climbing <span class="tag tag-est">estimated</span>`,
-      fmtPct(eff), `as this utility absorbs ${fmtMw(u.omw)} of data-center demand`, "up"));
+      fmtPct(eff), `as this utility absorbs ${fmtMw(u.omw)} of data center demand`, "up"));
     cards.push(card("What it's costing a typical farm", fmtUsd(eff / 100 * stateSpend(u)) + "/yr",
       `on a ${u.st || "U.S."} farm's ${fmtUsd(stateSpend(u))} power-and-utilities bill`));
   } else {
@@ -187,9 +187,9 @@ function renderProj() {
   const mw = projectedMw(u, scen, yr);
   const eff = pctEff(BETA, mw);
   const note = (scen === "state" && u.omw === 0)
-    ? "no operating capacity to grow — use the planned-capacity scenario" : (SCEN_NOTE[scen] || "");
+    ? "no operating capacity to grow; use the planned-capacity scenario" : (SCEN_NOTE[scen] || "");
   const cards = [
-    card("Projected data-center load", fmtMw(mw), note),
+    card("Projected data center load", fmtMw(mw), note),
     card(`How much faster farm power prices climb <span class="tag tag-scen">scenario</span>`, fmtPct(eff),
       `if this capacity gets built`, "up"),
     card("What it would cost a typical farm", fmtUsd(eff / 100 * stateSpend(u)) + "/yr",
@@ -241,7 +241,7 @@ function initMap(terr, fac) {
     onEachFeature: (f, lyr) => {
       const u = byId[f.properties.u];
       if (!u) return;
-      lyr.bindTooltip(`${esc(u.n)} — ${u.omw > 0 ? fmtMw(u.omw) + ", " + fmtPct(pctEff(BETA, u.omw)) + " ag-price growth" : "no operating capacity"}`, { sticky: true });
+      lyr.bindTooltip(`${esc(u.n)}: ${u.omw > 0 ? fmtMw(u.omw) + ", " + fmtPct(pctEff(BETA, u.omw)) + " ag-price growth" : "no operating capacity"}`, { sticky: true });
       lyr.on("click", () => { select(u, null, false); document.getElementById("result").scrollIntoView({ behavior: "smooth" }); });
     },
   }).addTo(map);
